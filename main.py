@@ -33,7 +33,7 @@ def getCameraInfo():
             # )
             # )
         else:
-            capmode = 0
+            capmode = 3
             listOfCamInfo.append(CameraSpec(
                 name=cap.name,
                 width=cap.available_modes[capmode][0],
@@ -66,37 +66,10 @@ def initCameraFromList(devices, camera: CameraSpec):
 def setCamAttrs(cam):
     print(cam.name)
     controls_dict = dict([(c.display_name, c) for c in cam.controls])
-    print(controls_dict['Gamma'])
-    print(controls_dict['Brightness'])
-    print(controls_dict['Auto Exposure Mode'])
     controls_dict['Gamma'].value = 200
     controls_dict['Brightness'].value = 0
     controls_dict['Auto Exposure Mode'].value = 1
-    print(controls_dict['Gamma'])
-    print(controls_dict['Brightness'])
-    print(controls_dict['Auto Exposure Mode'])
     return cam
-
-# def updateCamSettings(Cameras):
-#     print("UCS")
-#     for spec, cam in Cameras.items():
-#         print(spec.name)
-#         if int(spec.name[-1]) < 2:
-#             controls_dict = dict([(c.display_name, c) for c in cam.controls])
-#             print(controls_dict)
-#             print(controls_dict['Gamma'])
-#             print(controls_dict['Brightness'])
-#             print(controls_dict['Auto Exposure Mode'])
-#             controls_dict['Auto Exposure Mode'].value = 1
-#             controls_dict['Gamma'].value = 200
-#             print(controls_dict)
-#             print(controls_dict['Gamma'])
-#             print(controls_dict['Brightness'])
-#             print(controls_dict['Auto Exposure Mode'])
-#         else:
-#             controls_dict = dict([(c.display_name, c) for c in cam.controls])
-#             controls_dict['Auto Exposure Mode'].value = 1
-#     return Cameras
 def openStream(streamTime, camDict):
     # camDict = updateCamSettings(camDict)
     initTime = time.perf_counter()
@@ -117,7 +90,7 @@ def openStream(streamTime, camDict):
                 except uvc.StreamError as err:
                     logging.debug(f"Failed to get a frame for {spec}: {err}")
                 else:
-                    cv2.imshow(spec.name, frame.bgr)
+                    cv2.imshow(spec.name, cv2.flip(frame.bgr, 0))
                     cv2.waitKey(1)
         currTime = time.perf_counter() - initTime
 

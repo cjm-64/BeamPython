@@ -70,9 +70,11 @@ def setCamAttrs(cam):
     controls_dict['Brightness'].value = 0
     controls_dict['Auto Exposure Mode'].value = 1
     return cam
+
 def openStream(streamTime, camDict):
     # camDict = updateCamSettings(camDict)
     initTime = time.perf_counter()
+    n = 0
     currTime = 0
     while currTime < streamTime:
         print(currTime)
@@ -90,9 +92,16 @@ def openStream(streamTime, camDict):
                 except uvc.StreamError as err:
                     logging.debug(f"Failed to get a frame for {spec}: {err}")
                 else:
+                    if (spec.name == "Pupil Cam2 ID0"):
+                        cv2.moveWindow(spec.name, 100, 200)
+                    else:
+                        cv2.moveWindow(spec.name, 400, 200)
                     cv2.imshow(spec.name, cv2.flip(frame.bgr, 0))
                     cv2.waitKey(1)
+        n += 1
         currTime = time.perf_counter() - initTime
+
+    print("FPS: ", n/streamTime)
 
     for cam in camDict.values():
         cam.close()
